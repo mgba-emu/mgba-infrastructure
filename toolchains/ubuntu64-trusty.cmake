@@ -3,7 +3,7 @@ if(_INCLUDED_TOOLCHAIN_FILE)
 endif()
 
 set(cross_prefix /usr/local/bin/x86_64-linux-gnu-)
-set(root /data/opt/cross/roots/ubuntu64-trusty)
+set(root /opt/roots/ubuntu64-trusty)
 
 set(CMAKE_SYSTEM_NAME Linux CACHE INTERNAL "system name")
 set(CMAKE_LIBRARY_ARCHITECTURE x86_64-linux-gnu CACHE INTERNAL "system triplet")

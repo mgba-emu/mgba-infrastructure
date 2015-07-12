@@ -1,4 +1,4 @@
-set(toolchain_dir /home/jeffrey/win32/static-root)
+set(toolchain_dir /opt/roots/win32-static)
 set(toolchain_bin_dir ${toolchain_dir}/bin)
 set(toolchain_inc_dir ${toolchain_dir}/include)
 set(toolchain_lib_dir ${toolchain_dir}/lib)

@@ -1,4 +1,4 @@
-set(toolchain_dir /home/jeffrey/bbb/root)
+set(toolchain_dir /opt/roots/bbb)
 set(toolchain_bin_dir ${toolchain_dir}/usr/bin)
 set(toolchain_inc_dir ${toolchain_dir}/usr/include/arm-linux-gnueabihf)
 set(toolchain_lib_dir ${toolchain_dir}/usr/lib/arm-linux-gnueabihf)
@@ -8,7 +8,7 @@ set(ENV{PKG_CONFIG_PATH} ${toolchain_lib_dir}/pkgconfig:${toolchain_dir}/usr/loc
 set(ENV{PKG_CONFIG_SYSROOT_DIR} ${toolchain_dir})
 set(PKG_CONFIG_EXECUTABLE /usr/local/bin/pkg-config)
 
-set(inc_flags "-I/usr/local/arm-linux-gnueabihf/include -I/usr/local/lib/gcc/arm-linux-gnueabihf/4.8.2/include -I/usr/local/lib/gcc/arm-linux-gnueabihf/4.8.2/include-fixed -I${toolchain_dir}/usr/include -nostdinc")
+set(inc_flags "-I${toolchain_dir}/usr/include")
 
 set(CMAKE_SYSTEM_NAME Linux CACHE INTERNAL "system name")
 set(CMAKE_SYSTEM_PROCESSOR armv7l CACHE INTERNAL "processor")
