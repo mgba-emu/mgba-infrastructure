@@ -1,5 +1,5 @@
 #!/bin/bash
-source ~/mgba-master/.aws-cred
+source ~/master/.aws-cred
 file=$1
 linkName=$2
 fileName=`basename ${file}`
