@@ -7,7 +7,6 @@ set(ENV{PKG_CONFIG_LIBDIR} ${toolchain_dir}/lib/pkgconfig)
 set(ENV{PKG_CONFIG_PATH} ${toolchain_lib_dir}/pkgconfig:${toolchain_dir}/share/pkgconfig)
 set(CMAKE_PREFIX_PATH ${toolchain_dir})
 
-set(inc_flags "-I/usr/local/i686-w64-mingw32/include -B/usr/local/lib/gcc/i686-w64-mingw32/4.9.3 -I${toolchain_dir}/usr/include")
 set(link_flags "-static-libgcc -static-libstdc++ -Bstatic -L${toolchain_dir}/plugins/platforms -L${toolchain_dir}/plugins/audio")
 
 set(CMAKE_SYSTEM_NAME Windows CACHE INTERNAL "system name")
@@ -19,6 +18,7 @@ set(CMAKE_ASM_COMPILER ${cross_prefix}gcc)
 set(CMAKE_RC_COMPILER ${cross_prefix}windres)
 set(CMAKE_LINKER ${cross_prefix}ld)
 
+add_definitions(-DEPOXY_STATIC_LIB)
 set(CMAKE_EXE_LINKER_FLAGS ${link_flags} CACHE INTERNAL "exe link flags")
 set(CMAKE_MODULE_LINKER_FLAGS ${link_flags} CACHE INTERNAL "module link flags")
 set(CMAKE_SHARED_LINKER_FLAGS "${link_flags} -Wl,--export-all-symbols" CACHE INTERNAL "shared link flags")
