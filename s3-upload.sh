@@ -8,11 +8,15 @@ bucket=mgba
 resource="/${bucket}/${prefix}${fileName}"
 contentType="application/x-compressed"
 dateValue=`date -R`
-if [ "$1" = "nightly"]
-  extraHeader=-H "x-amz-storage-class: REDUCED_REDUNDANCY"
+if [ "$1" = "nightly/" ]; then
+	storageClass=REDUCED_REDUNDANCY
+else
+	storageClass=STANDARD
 fi
 
-stringToSign="PUT\n\n${contentType}\n${dateValue}\nx-amz-acl:public-read\nx-amz-storage-class:REDUCED_REDUNDANCY\n${resource}"
+stringToSign="PUT\n\n${contentType}\n${dateValue}\nx-amz-acl:public-read\nx-amz-storage-class:${storageClass}\n${resource}"
+echo $stringToSign
+echo $storageClass
 signature=`echo -en ${stringToSign} | openssl sha1 -hmac ${s3Secret} -binary | base64`
 curl -X PUT -T "${file}" \
   -H "Host: ${bucket}.s3.amazonaws.com" \
@@ -20,10 +24,8 @@ curl -X PUT -T "${file}" \
   -H "Content-Type: ${contentType}" \
   -H "Authorization: AWS ${s3Key}:${signature}" \
   -H "x-amz-acl: public-read" \
-  $extraHeader \
-  https://${bucket}.s3.amazonaws.com/${prefix}${fileName}
-
-ret=$?
+  -H "x-amz-storage-class: ${storageClass}" \
+  https://${bucket}.s3.amazonaws.com/${prefix}${fileName} || exit $?
 
 if [ -n "$linkName" ]; then
 	stringToSign="PUT\n\n\n${dateValue}\nx-amz-acl:public-read\nx-amz-copy-source:${resource}\nx-amz-storage-class:REDUCED_REDUNDANCY\n/${bucket}/${linkName}"
@@ -34,10 +36,6 @@ if [ -n "$linkName" ]; then
 	  -H "Authorization: AWS ${s3Key}:${signature}" \
 	  -H "x-amz-acl: public-read" \
 	  -H "x-amz-copy-source: ${resource}" \
-	  $extraHeader \
-	  https://${bucket}.s3.amazonaws.com/${linkName}
-
-	ret=$?
+	  -H "x-amz-storage-class: ${storageClass}" \
+	  https://${bucket}.s3.amazonaws.com/${linkName} || exit $?
 fi
-
-exit $ret
