@@ -13,7 +13,7 @@ set(ENV{PKG_CONFIG_LIBDIR} ${toolchain_dir}/lib/pkgconfig)
 set(ENV{PKG_CONFIG_PATH} ${toolchain_lib_dir}/pkgconfig:${toolchain_dir}/share/pkgconfig:${root}/usr/lib/pkgconfig)
 set(CMAKE_SYSTEM_PROGRAM_PATH /usr/local/bin)
 set(CMAKE_PREFIX_PATH ${toolchain_dir};${root}/usr/local/opt/qt5)
-set(CMAKE_FRAMEWORK_PATH ${rootold}/System/Library/Frameworks;${rootold}/Library/Frameworks)
+set(CMAKE_SYSTEM_FRAMEWORK_PATH "${rootold}/System/Library/Frameworks" "${rootold}/Library/Frameworks")
 
 set(CMAKE_SYSTEM_NAME Darwin CACHE INTERNAL "system name")
 set(CMAKE_AR ${cross_prefix}ar CACHE FILEPATH "archiver")
@@ -29,7 +29,7 @@ set(link_flags "-framework CoreFoundation")
 set(CMAKE_EXE_LINKER_FLAGS ${link_flags} CACHE INTERNAL "exe link flags")
 set(CMAKE_MODULE_LINKER_FLAGS ${link_flags} CACHE INTERNAL "module link flags")
 set(CMAKE_SHARED_LINKER_FLAGS ${link_flags} CACHE INTERNAL "shared link flags")
-set(CMAKE_FIND_ROOT_PATH "${toolchain_lib_dir};${root}" CACHE INTERNAL "cross root directory")
+set(CMAKE_FIND_ROOT_PATH "${toolchain_lib_dir};${root};${rootold}" CACHE INTERNAL "cross root directory")
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER CACHE INTERNAL "")
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY CACHE INTERNAL "")
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY CACHE INTERNAL "")
@@ -45,3 +45,12 @@ set_target_properties(Qt5::rcc PROPERTIES IMPORTED_LOCATION /usr/local/lib/qt5/b
 
 add_executable(Qt5::uic IMPORTED)
 set_target_properties(Qt5::uic PROPERTIES IMPORTED_LOCATION /usr/local/lib/qt5/bin/uic)
+
+add_executable(Qt5::lupdate IMPORTED)
+set_target_properties(Qt5::lupdate PROPERTIES IMPORTED_LOCATION /usr/local/lib/qt5/bin/lupdate)
+
+add_executable(Qt5::lrelease IMPORTED)
+set_target_properties(Qt5::lrelease PROPERTIES IMPORTED_LOCATION /usr/local/lib/qt5/bin/lrelease)
+
+add_executable(Qt5::lconvert IMPORTED)
+set_target_properties(Qt5::lconvert PROPERTIES IMPORTED_LOCATION /usr/local/lib/qt5/bin/lconvert)
