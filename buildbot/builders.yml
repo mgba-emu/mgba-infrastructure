@@ -1,0 +1,92 @@
+- name: bbb
+  baseConfig:
+    root: '/opt/roots/bbb'
+    arch: 'armv7-linux-gnueabihf-bbb'
+    toolchain: '/home/buildbot/mgba-infrastructure/toolchains/bbb.cmake'
+    perf: True
+    perfSlave: 'nigrata'
+    bbb: True
+- name: freebsd
+  baseConfig:
+    frontends: True
+    arch: 'x86_64-freebsd-amd64'
+- name: osx
+  baseConfig:
+    root: '/opt/roots/osx-self'
+    deps: '/home/buildbot/deps/osx.tar.gz'
+    files: ['Applications/mGBA.app', 'share/doc/mGBA/CHANGES', 'README.html']
+    arch: 'x86_64-apple-darwin13'
+    platform: 'osx'
+    frontends: True
+    static: True
+    ext: 'tar.xz'
+    toolchain: '/home/buildbot/mgba-infrastructure/toolchains/osx.cmake'
+- name: rpi
+  baseConfig:
+    cmakeFlags: ['-DUSE_ZLIB=OFF', '-DUSE_PNG=OFF']
+    root: '/opt/roots/rpi'
+    arch: 'armv6-linux-gnueabihf-rpi'
+    toolchain: '/home/buildbot/mgba-infrastructure/toolchains/rpi.cmake'
+    perf: True
+    perfSlave: 'flavescens'
+    rpi: True
+- name: win32
+  baseConfig:
+    root: '/opt/roots/win32'
+    deps: '/home/buildbot/deps/win32.tar.gz'
+    files: ['bin/mGBA.exe', 'CHANGES.txt', 'README.html', 'share/mgba/shaders', 'share/mgba/nointro.dat']
+    arch: 'i686-w64-mingw32'
+    platform: 'win32'
+    frontends: True
+    static: True
+    ext: '7z'
+    license: 'LICENSE.txt'
+    toolchain: '/home/buildbot/mgba-infrastructure/toolchains/win32.cmake'
+- name: ubuntu
+  baseConfig:
+    files: ['libmgba.deb', 'mgba-sdl.deb', 'mgba-qt.deb']
+    arch: 'x86_64-ubuntu-linux-gnu'
+    frontends: True
+    ext: 'tar.xz'
+    deb: True
+  builders: ['ubuntu64-1', 'ubuntu64-2']
+  configs:
+  - name: 'ubuntu64-trusty'
+    root: '/opt/roots/ubuntu64-trusty'
+    toolchain: '/home/buildbot/mgba-infrastructure/toolchains/ubuntu64-trusty.cmake'
+  - name: 'ubuntu64-xenial'
+    root: '/opt/roots/ubuntu64-xenial'
+    toolchain: '/home/buildbot/mgba-infrastructure/toolchains/ubuntu64-xenial.cmake'
+  - name: 'ubuntu64-yakkety'
+    root: '/opt/roots/ubuntu64-yakkety'
+    toolchain: '/home/buildbot/mgba-infrastructure/toolchains/ubuntu64-yakkety.cmake'
+- name: 3ds
+  baseConfig:
+    files: ['mgba.3dsx', 'mgba.smdh', 'mgba.cia']
+    perf: True
+    arch: 'armv6-none-eabi'
+    platform: '3ds'
+    static: True
+    ext: '7z'
+    license: 'LICENSE.txt'
+    toolchain: '../src/platform/3ds/CMakeToolchain.txt'
+    profileServerCommand: ['-S', '/opt/devkitPro/devkitARM/bin/3dslink -a 192.168.1.130 ../mgba-perf.3dsx --arg0 sdmc:/3ds/mgba-perf.3dsx']
+    profileServerAddress: ['-s', '192.168.1.130:7216']
+- name: psp2
+  baseConfig:
+    files: ['mgba.vpk']
+    arch: 'armv7-vita-eabi'
+    platform: 'vita'
+    static: True
+    ext: '7z'
+    license: 'LICENSE.txt'
+    toolchain: '../src/platform/psp2/CMakeToolchain.vitasdk'
+- name: wii
+  baseConfig:
+    files: ['boot.dol', 'meta.xml', 'icon.png']
+    arch: 'powerpc-none-eabi'
+    platform: 'wii'
+    static: True
+    ext: '7z'
+    license: 'LICENSE.txt'
+    toolchain: '../src/platform/wii/CMakeToolchain.txt'
