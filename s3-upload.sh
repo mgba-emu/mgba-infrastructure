@@ -8,17 +8,13 @@ bucket=mgba
 resource="/${bucket}/${prefix}${fileName}"
 contentType="application/x-compressed"
 dateValue=`date -R`
-if [ "$1" = "nightly/" ]; then
-	storageClass=REDUCED_REDUNDANCY
-else
-	storageClass=STANDARD
-fi
+storageClass=STANDARD
 
 stringToSign="PUT\n\n${contentType}\n${dateValue}\nx-amz-acl:public-read\nx-amz-storage-class:${storageClass}\n${resource}"
 echo $stringToSign
 echo $storageClass
 signature=`echo -en ${stringToSign} | openssl sha1 -hmac ${s3Secret} -binary | base64`
-curl -X PUT -T "${file}" \
+curl -X PUT -T "${file}" --retry 3 \
   -H "Host: ${bucket}.s3.amazonaws.com" \
   -H "Date: ${dateValue}" \
   -H "Content-Type: ${contentType}" \
@@ -28,9 +24,9 @@ curl -X PUT -T "${file}" \
   https://${bucket}.s3.amazonaws.com/${prefix}${fileName} || exit $?
 
 if [ -n "$linkName" ]; then
-	stringToSign="PUT\n\n\n${dateValue}\nx-amz-acl:public-read\nx-amz-copy-source:${resource}\nx-amz-storage-class:REDUCED_REDUNDANCY\n/${bucket}/${linkName}"
+	stringToSign="PUT\n\n\n${dateValue}\nx-amz-acl:public-read\nx-amz-copy-source:${resource}\nx-amz-storage-class:STANDARD\n/${bucket}/${linkName}"
 	signature=`echo -en ${stringToSign} | openssl sha1 -hmac ${s3Secret} -binary | base64`
-	curl -X PUT \
+	curl -X PUT --retry 3 \
 	  -H "Host: ${bucket}.s3.amazonaws.com" \
 	  -H "Date: ${dateValue}" \
 	  -H "Authorization: AWS ${s3Key}:${signature}" \
