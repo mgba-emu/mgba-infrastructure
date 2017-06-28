@@ -18,7 +18,7 @@ set(CMAKE_ASM_COMPILER ${cross_prefix}gcc)
 set(CMAKE_RC_COMPILER ${cross_prefix}windres)
 set(CMAKE_LINKER ${cross_prefix}ld)
 
-add_definitions(-DEPOXY_STATIC_LIB)
+add_definitions(-DEPOXY_STATIC_LIB -DZIP_STATIC)
 set(CMAKE_EXE_LINKER_FLAGS ${link_flags} CACHE INTERNAL "exe link flags")
 set(CMAKE_MODULE_LINKER_FLAGS ${link_flags} CACHE INTERNAL "module link flags")
 set(CMAKE_SHARED_LINKER_FLAGS "${link_flags} -Wl,--export-all-symbols" CACHE INTERNAL "shared link flags")
