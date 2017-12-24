@@ -9,14 +9,20 @@
 - name: freebsd
   baseConfig:
     frontends: True
+    medusa: True
     arch: 'x86_64-freebsd-amd64'
+    python: True
+    tests: True
+    no-lto: True
 - name: osx
   baseConfig:
     root: '/opt/roots/osx-self'
     deps: '/home/buildbot/deps/osx.tar.gz'
-    files: ['Applications/mGBA.app', 'share/doc/mGBA/CHANGES', 'README.html']
+    files: ['Applications/mGBA.app', 'share/doc/mGBA/CHANGES', 'README.html', 'README_DE.html']
+    files-medusa: ['Applications/medusa.app', 'share/doc/medusa-emu/CHANGES', 'README.html', 'README_DE.html']
     arch: 'x86_64-apple-darwin13'
     platform: 'osx'
+    medusa: True
     frontends: True
     static: True
     ext: 'tar.xz'
@@ -31,47 +37,76 @@
     perfSlave: 'flavescens'
     rpi: True
 - name: win32
+  builders: ['ec2', 'vulpes-1']
   baseConfig:
     root: '/opt/roots/win32'
     deps: '/home/buildbot/deps/win32.tar.gz'
-    files: ['bin/mGBA.exe', 'CHANGES.txt', 'README.html', 'share/mgba/shaders', 'share/mgba/nointro.dat']
+    files: ['bin/mGBA.exe', 'CHANGES.txt', 'README.html', 'README_DE.html', 'share/mgba/shaders', 'share/mgba/nointro.dat']
+    files-medusa: ['bin/medusa.exe', 'CHANGES.txt', 'README.html', 'README_DE.html', 'share/medusa-emu/shaders', 'share/medusa-emu/nointro.dat']
     arch: 'i686-w64-mingw32'
     platform: 'win32'
+    medusa: True
     frontends: True
     static: True
     ext: '7z'
+    no-lto: True
     license: 'LICENSE.txt'
     toolchain: '/home/buildbot/mgba-infrastructure/toolchains/win32.cmake'
+- name: win64
+  builders: ['ec2', 'vulpes-0']
+  baseConfig:
+    root: '/opt/roots/win64-static'
+    deps: '/home/buildbot/deps/win32.tar.gz'
+    files: ['bin/mGBA.exe', 'CHANGES.txt', 'README.html', 'README_DE.html', 'share/mgba/shaders', 'share/mgba/nointro.dat']
+    files-medusa: ['bin/medusa.exe', 'CHANGES.txt', 'README.html', 'README_DE.html', 'share/medusa-emu/shaders', 'share/medusa-emu/nointro.dat']
+    arch: 'x86_64-w64-mingw32'
+    platform: 'win64'
+    medusa: True
+    frontends: True
+    static: True
+    ext: '7z'
+    no-lto: True
+    license: 'LICENSE.txt'
+    toolchain: '/home/buildbot/mgba-infrastructure/toolchains/win64.cmake'
 - name: ubuntu
   baseConfig:
     files: ['libmgba.deb', 'mgba-sdl.deb', 'mgba-qt.deb']
+    files-medusa: ['libmedusa-emu.deb', 'medusa-emu-sdl.deb', 'medusa-emu-qt.deb']
     arch: 'x86_64-ubuntu-linux-gnu'
+    medusa: True
     frontends: True
     ext: 'tar.xz'
     deb: True
-  builders: ['ubuntu64-1', 'ubuntu64-2']
   configs:
   - name: 'ubuntu64-trusty'
+    platform: 'ubuntu64-trusty'
     root: '/opt/roots/ubuntu64-trusty'
     toolchain: '/home/buildbot/mgba-infrastructure/toolchains/ubuntu64-trusty.cmake'
   - name: 'ubuntu64-xenial'
+    platform: 'ubuntu64-xenial'
     root: '/opt/roots/ubuntu64-xenial'
     toolchain: '/home/buildbot/mgba-infrastructure/toolchains/ubuntu64-xenial.cmake'
   - name: 'ubuntu64-yakkety'
+    platform: 'ubuntu64-yakkety'
     root: '/opt/roots/ubuntu64-yakkety'
     toolchain: '/home/buildbot/mgba-infrastructure/toolchains/ubuntu64-yakkety.cmake'
+  - name: 'ubuntu64-zesty'
+    platform: 'ubuntu64-zesty'
+    root: '/opt/roots/ubuntu64-zesty'
+    toolchain: '/home/buildbot/mgba-infrastructure/toolchains/ubuntu64-zesty.cmake'
 - name: 3ds
   baseConfig:
-    files: ['mgba.3dsx', 'mgba.smdh', 'mgba.cia']
+    files: ['3dsx/mgba.3dsx', '3dsx/mgba.smdh', '3dsx/mgba.xml', 'cia/mgba.cia']
     perf: True
     arch: 'armv6-none-eabi'
     platform: '3ds'
     static: True
     ext: '7z'
+    no-lto: True
     license: 'LICENSE.txt'
     toolchain: '../src/platform/3ds/CMakeToolchain.txt'
-    profileServerCommand: ['-S', '/opt/devkitPro/devkitARM/bin/3dslink -a 192.168.1.130 ../mgba-perf.3dsx --arg0 sdmc:/3ds/mgba-perf.3dsx']
-    profileServerAddress: ['-s', '192.168.1.130:7216']
+    profileServerCommand: ['-S', '/opt/devkitPro/devkitARM/bin/3dslink -a 192.168.1.32 ../mgba-perf.3dsx --arg0 sdmc:/3ds/mgba-perf.3dsx']
+    profileServerAddress: ['-s', '192.168.1.32:7216']
 - name: psp2
   baseConfig:
     files: ['mgba.vpk']
