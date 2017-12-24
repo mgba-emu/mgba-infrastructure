@@ -16,6 +16,7 @@ set(CMAKE_PREFIX_PATH ${toolchain_dir};${root}/usr/local/opt/qt5)
 set(CMAKE_SYSTEM_FRAMEWORK_PATH "${rootold}/System/Library/Frameworks" "${rootold}/Library/Frameworks")
 
 set(CMAKE_SYSTEM_NAME Darwin CACHE INTERNAL "system name")
+set(CMAKE_SYSTEM_VERSION 10.8.0 CACHE INTERNAL "system version")
 set(CMAKE_AR ${cross_prefix}ar CACHE FILEPATH "archiver")
 set(CMAKE_C_COMPILER ${cross_prefix}clang)
 set(CMAKE_CXX_COMPILER ${cross_prefix}clang++)
@@ -26,6 +27,7 @@ set(CMAKE_INSTALL_NAME_TOOL ${cross_prefix}install_name_tool)
 
 set(link_flags "-framework CoreFoundation")
 
+set(CMAKE_C_FLAGS "-mmacosx-version-min=10.6")
 set(CMAKE_EXE_LINKER_FLAGS ${link_flags} CACHE INTERNAL "exe link flags")
 set(CMAKE_MODULE_LINKER_FLAGS ${link_flags} CACHE INTERNAL "module link flags")
 set(CMAKE_SHARED_LINKER_FLAGS ${link_flags} CACHE INTERNAL "shared link flags")
