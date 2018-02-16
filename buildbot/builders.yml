@@ -41,8 +41,8 @@
   baseConfig:
     root: '/opt/roots/win32'
     deps: '/home/buildbot/deps/win32.tar.gz'
-    files: ['bin/mGBA.exe', 'CHANGES.txt', 'README.html', 'README_DE.html', 'share/mgba/shaders', 'share/mgba/nointro.dat']
-    files-medusa: ['bin/medusa.exe', 'CHANGES.txt', 'README.html', 'README_DE.html', 'share/medusa-emu/shaders', 'share/medusa-emu/nointro.dat']
+    files: ['mGBA.exe', 'CHANGES.txt', 'README.html', 'README_DE.html', 'shaders', 'nointro.dat']
+    files-medusa: ['medusa.exe', 'CHANGES.txt', 'README.html', 'README_DE.html', 'shaders', 'nointro.dat']
     arch: 'i686-w64-mingw32'
     platform: 'win32'
     medusa: True
@@ -57,8 +57,8 @@
   baseConfig:
     root: '/opt/roots/win64-static'
     deps: '/home/buildbot/deps/win32.tar.gz'
-    files: ['bin/mGBA.exe', 'CHANGES.txt', 'README.html', 'README_DE.html', 'share/mgba/shaders', 'share/mgba/nointro.dat']
-    files-medusa: ['bin/medusa.exe', 'CHANGES.txt', 'README.html', 'README_DE.html', 'share/medusa-emu/shaders', 'share/medusa-emu/nointro.dat']
+    files: ['mGBA.exe', 'CHANGES.txt', 'README.html', 'README_DE.html', 'shaders', 'nointro.dat']
+    files-medusa: ['medusa.exe', 'CHANGES.txt', 'README.html', 'README_DE.html', 'shaders', 'nointro.dat']
     arch: 'x86_64-w64-mingw32'
     platform: 'win64'
     medusa: True
@@ -78,23 +78,12 @@
     ext: 'tar.xz'
     deb: True
   configs:
-  - name: 'ubuntu64-trusty'
-    platform: 'ubuntu64-trusty'
-    root: '/opt/roots/ubuntu64-trusty'
-    toolchain: '/home/buildbot/mgba-infrastructure/toolchains/ubuntu64-trusty.cmake'
   - name: 'ubuntu64-xenial'
     platform: 'ubuntu64-xenial'
     root: '/opt/roots/ubuntu64-xenial'
     toolchain: '/home/buildbot/mgba-infrastructure/toolchains/ubuntu64-xenial.cmake'
-  - name: 'ubuntu64-yakkety'
-    platform: 'ubuntu64-yakkety'
-    root: '/opt/roots/ubuntu64-yakkety'
-    toolchain: '/home/buildbot/mgba-infrastructure/toolchains/ubuntu64-yakkety.cmake'
-  - name: 'ubuntu64-zesty'
-    platform: 'ubuntu64-zesty'
-    root: '/opt/roots/ubuntu64-zesty'
-    toolchain: '/home/buildbot/mgba-infrastructure/toolchains/ubuntu64-zesty.cmake'
 - name: 3ds
+  builders: ['ec2', 'vulpes-0', 'vulpes-1']
   baseConfig:
     files: ['3dsx/mgba.3dsx', '3dsx/mgba.smdh', '3dsx/mgba.xml', 'cia/mgba.cia']
     perf: True
@@ -102,7 +91,6 @@
     platform: '3ds'
     static: True
     ext: '7z'
-    no-lto: True
     license: 'LICENSE.txt'
     toolchain: '../src/platform/3ds/CMakeToolchain.txt'
     profileServerCommand: ['-S', '/opt/devkitPro/devkitARM/bin/3dslink -a 192.168.1.32 ../mgba-perf.3dsx --arg0 sdmc:/3ds/mgba-perf.3dsx']
@@ -117,6 +105,7 @@
     license: 'LICENSE.txt'
     toolchain: '../src/platform/psp2/CMakeToolchain.vitasdk'
 - name: wii
+  builders: ['ec2', 'vulpes-0', 'vulpes-1']
   baseConfig:
     files: ['boot.dol', 'meta.xml', 'icon.png']
     arch: 'powerpc-none-eabi'
