@@ -1,0 +1,136 @@
+- name: bbb
+  baseConfig:
+    cmake-flags: ['-DDBUILD_BBB=ON']
+    root: '/opt/roots/bbb'
+    arch: 'armv7-linux-gnueabihf-bbb'
+    toolchain: '/home/buildbot/mgba-infrastructure/toolchains/bbb.cmake'
+    perf: True
+    perf-worker: 'nigrata'
+    archive: 'build-base.tar.xz'
+    archive-perf: ['test']
+- name: freebsd
+  baseConfig:
+    frontends: True
+    medusa: True
+    arch: 'x86_64-freebsd-amd64'
+    python: True
+    tests: True
+    no-lto: True
+- name: osx
+  baseConfig:
+    cmake-flags: ['-DEXTRA_LICENSES=../../ffmpeg.txt;../../imagemagick.txt;../../lame.txt;../../libelf.txt;../../libvpx.txt;../../libzip.txt;../../opus.txt;../../qt5.txt;../../sdl2.txt;../../x264.txt;../../xvid.txt', '-DCMAKE_PREFIX_PATH=/opt/cross/osx']
+    archive: 'build.tar.xz'
+    arch: 'x86_64-apple-darwin12'
+    platform: 'osx'
+    medusa: True
+    frontends: True
+    static: True
+    ext: 'tar.xz'
+    no-lto: True
+  builders: ['crocuta']
+- name: rpi
+  baseConfig:
+    cmake-flags: ['-DUSE_ZLIB=OFF', '-DUSE_PNG=OFF', '-DDBUILD_RASPI=ON']
+    root: '/opt/roots/rpi'
+    arch: 'armv6-linux-gnueabihf-rpi'
+    toolchain: '/home/buildbot/mgba-infrastructure/toolchains/rpi.cmake'
+    perf: True
+    perf-worker: 'flavescens'
+    archive: 'build-base.tar.xz'
+    archive-perf: ['test']
+- name: windows
+  baseConfig:
+    container: 'mgba/windows'
+    arch: 'x86_64-w64-mingw32'
+    platform: 'win64'
+    medusa: True
+    frontends: True
+    static: True
+    ext: '7z'
+    no-lto: True
+    debug: True
+    files: ['build-base.tar.xz', 'build-sdl.tar.xz', 'build-qt.tar.xz']
+    files-debug: ['build-debug.tar.xz']
+    unarchive-files: True
+  configs:
+  - name: 'win32'
+    container: 'mgba/windows:w32'
+    platform: 'win32'
+    arch: 'i686-w64-mingw32'
+  - name: 'win64'
+    container: 'mgba/windows:w64'
+    platform: 'win64'
+    arch: 'x86_64-w64-mingw32'
+- name: ubuntu
+  baseConfig:
+    container: 'mgba/ubuntu'
+    archive: 'libmgba.deb'
+    archive-perf: ['mgba-test']
+    files: ['libmgba.deb', 'mgba-sdl.deb', 'mgba-qt.deb']
+    files-medusa: ['libmedusa-emu.deb', 'medusa-emu-sdl.deb', 'medusa-emu-qt.deb']
+    arch: 'x86_64-ubuntu-linux-gnu'
+    medusa: True
+    frontends: True
+    ext: 'tar.xz'
+    deb: True
+    perf-basedir: '../../..'
+  configs:
+  - name: 'ubuntu64-xenial'
+    container: 'mgba/ubuntu:xenial'
+    platform: 'ubuntu64-xenial'
+    perf: True
+    perf-worker: 'arabica'
+  - name: 'ubuntu64-bionic'
+    container: 'mgba/ubuntu:bionic'
+    platform: 'ubuntu64-bionic'
+  - name: 'ubuntu64-cosmic'
+    container: 'mgba/ubuntu:cosmic'
+    platform: 'ubuntu64-cosmic'
+- name: 3ds
+  baseConfig:
+    container: 'mgba/3ds'
+    archive: 'build-base.tar.xz'
+    archive-perf: ['test']
+    perf: True
+    arch: 'armv6-none-eabi'
+    platform: '3ds'
+    static: True
+    ext: '7z'
+    profileServerCommand: ['-S', '/opt/devkitPro/devkitARM/bin/3dslink -a 192.168.1.32 mgba-perf.3dsx --arg0 sdmc:/3ds/mgba-perf.3dsx']
+    profileServerAddress: ['-s', '192.168.1.32:7216']
+    no-lto: True
+    no-unix: True
+    debug: True
+    archive-debug: 'build-debug.tar.xz'
+- name: psp2
+  baseConfig:
+    container: 'mgba/vita'
+    archive: 'build-base.tar.xz'
+    arch: 'armv7-vita-eabi'
+    platform: 'vita'
+    static: True
+    ext: '7z'
+    debug: True
+    archive-debug: 'build-debug.tar.xz'
+- name: switch
+  baseConfig:
+    container: 'mgba/switch'
+    archive: 'build-base.tar.xz'
+    arch: 'aarch64-none-elf'
+    platform: 'switch'
+    static: True
+    ext: '7z'
+    no-lto: True
+    debug: True
+    archive-debug: 'build-debug.tar.xz'
+- name: wii
+  baseConfig:
+    container: 'mgba/wii'
+    archive: 'build-base.tar.xz'
+    arch: 'powerpc-none-eabi'
+    platform: 'wii'
+    static: True
+    ext: '7z'
+    no-lto: True
+    debug: True
+    archive-debug: 'build-debug.tar.xz'
