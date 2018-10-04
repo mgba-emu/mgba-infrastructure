@@ -1,11 +1,13 @@
 - name: bbb
   baseConfig:
+    cmake-flags: ['-DDBUILD_BBB=ON']
     root: '/opt/roots/bbb'
     arch: 'armv7-linux-gnueabihf-bbb'
     toolchain: '/home/buildbot/mgba-infrastructure/toolchains/bbb.cmake'
     perf: True
-    perfSlave: 'nigrata'
-    bbb: True
+    perf-worker: 'nigrata'
+    archive: 'build-base.tar.xz'
+    archive-perf: ['test']
 - name: freebsd
   baseConfig:
     frontends: True
@@ -16,49 +18,29 @@
     no-lto: True
 - name: osx
   baseConfig:
-    root: '/opt/roots/osx-self'
-    deps: '/home/buildbot/deps/osx.tar.gz'
-    files: ['Applications/mGBA.app', 'share/doc/mGBA/CHANGES', 'README.html', 'README_DE.html']
-    files-medusa: ['Applications/medusa.app', 'share/doc/medusa-emu/CHANGES', 'README.html', 'README_DE.html']
-    arch: 'x86_64-apple-darwin13'
+    cmake-flags: ['-DEXTRA_LICENSES=../../ffmpeg.txt;../../imagemagick.txt;../../lame.txt;../../libelf.txt;../../libvpx.txt;../../libzip.txt;../../opus.txt;../../qt5.txt;../../sdl2.txt;../../x264.txt;../../xvid.txt', '-DCMAKE_PREFIX_PATH=/opt/cross/osx']
+    archive: 'build.tar.xz'
+    arch: 'x86_64-apple-darwin12'
     platform: 'osx'
     medusa: True
     frontends: True
     static: True
     ext: 'tar.xz'
-    toolchain: '/home/buildbot/mgba-infrastructure/toolchains/osx.cmake'
+    no-lto: True
+  builders: ['crocuta']
 - name: rpi
   baseConfig:
-    cmakeFlags: ['-DUSE_ZLIB=OFF', '-DUSE_PNG=OFF']
+    cmake-flags: ['-DUSE_ZLIB=OFF', '-DUSE_PNG=OFF', '-DDBUILD_RASPI=ON']
     root: '/opt/roots/rpi'
     arch: 'armv6-linux-gnueabihf-rpi'
     toolchain: '/home/buildbot/mgba-infrastructure/toolchains/rpi.cmake'
     perf: True
-    perfSlave: 'flavescens'
-    rpi: True
-- name: win32
-  builders: ['ec2', 'vulpes-1']
+    perf-worker: 'flavescens'
+    archive: 'build-base.tar.xz'
+    archive-perf: ['test']
+- name: windows
   baseConfig:
-    root: '/opt/roots/win32'
-    deps: '/home/buildbot/deps/win32.tar.gz'
-    files: ['mGBA.exe', 'CHANGES.txt', 'README.html', 'README_DE.html', 'shaders', 'nointro.dat']
-    files-medusa: ['medusa.exe', 'CHANGES.txt', 'README.html', 'README_DE.html', 'shaders', 'nointro.dat']
-    arch: 'i686-w64-mingw32'
-    platform: 'win32'
-    medusa: True
-    frontends: True
-    static: True
-    ext: '7z'
-    no-lto: True
-    license: 'LICENSE.txt'
-    toolchain: '/home/buildbot/mgba-infrastructure/toolchains/win32.cmake'
-- name: win64
-  builders: ['ec2', 'vulpes-0']
-  baseConfig:
-    root: '/opt/roots/win64-static'
-    deps: '/home/buildbot/deps/win32.tar.gz'
-    files: ['mGBA.exe', 'CHANGES.txt', 'README.html', 'README_DE.html', 'shaders', 'nointro.dat']
-    files-medusa: ['medusa.exe', 'CHANGES.txt', 'README.html', 'README_DE.html', 'shaders', 'nointro.dat']
+    container: 'mgba/windows'
     arch: 'x86_64-w64-mingw32'
     platform: 'win64'
     medusa: True
@@ -66,10 +48,24 @@
     static: True
     ext: '7z'
     no-lto: True
-    license: 'LICENSE.txt'
-    toolchain: '/home/buildbot/mgba-infrastructure/toolchains/win64.cmake'
+    debug: True
+    files: ['build-base.tar.xz', 'build-sdl.tar.xz', 'build-qt.tar.xz']
+    files-debug: ['build-debug.tar.xz']
+    unarchive-files: True
+  configs:
+  - name: 'win32'
+    container: 'mgba/windows:w32'
+    platform: 'win32'
+    arch: 'i686-w64-mingw32'
+  - name: 'win64'
+    container: 'mgba/windows:w64'
+    platform: 'win64'
+    arch: 'x86_64-w64-mingw32'
 - name: ubuntu
   baseConfig:
+    container: 'mgba/ubuntu'
+    archive: 'libmgba.deb'
+    archive-perf: ['mgba-test']
     files: ['libmgba.deb', 'mgba-sdl.deb', 'mgba-qt.deb']
     files-medusa: ['libmedusa-emu.deb', 'medusa-emu-sdl.deb', 'medusa-emu-qt.deb']
     arch: 'x86_64-ubuntu-linux-gnu'
@@ -77,40 +73,64 @@
     frontends: True
     ext: 'tar.xz'
     deb: True
+    perf-basedir: '../../..'
   configs:
   - name: 'ubuntu64-xenial'
+    container: 'mgba/ubuntu:xenial'
     platform: 'ubuntu64-xenial'
-    root: '/opt/roots/ubuntu64-xenial'
-    toolchain: '/home/buildbot/mgba-infrastructure/toolchains/ubuntu64-xenial.cmake'
+    perf: True
+    perf-worker: 'arabica'
+  - name: 'ubuntu64-bionic'
+    container: 'mgba/ubuntu:bionic'
+    platform: 'ubuntu64-bionic'
+  - name: 'ubuntu64-cosmic'
+    container: 'mgba/ubuntu:cosmic'
+    platform: 'ubuntu64-cosmic'
 - name: 3ds
-  builders: ['ec2', 'vulpes-0', 'vulpes-1']
   baseConfig:
-    files: ['3dsx/mgba.3dsx', '3dsx/mgba.smdh', '3dsx/mgba.xml', 'cia/mgba.cia']
+    container: 'mgba/3ds'
+    archive: 'build-base.tar.xz'
+    archive-perf: ['test']
     perf: True
     arch: 'armv6-none-eabi'
     platform: '3ds'
     static: True
     ext: '7z'
-    license: 'LICENSE.txt'
-    toolchain: '../src/platform/3ds/CMakeToolchain.txt'
-    profileServerCommand: ['-S', '/opt/devkitPro/devkitARM/bin/3dslink -a 192.168.1.32 ../mgba-perf.3dsx --arg0 sdmc:/3ds/mgba-perf.3dsx']
+    profileServerCommand: ['-S', '/opt/devkitPro/devkitARM/bin/3dslink -a 192.168.1.32 mgba-perf.3dsx --arg0 sdmc:/3ds/mgba-perf.3dsx']
     profileServerAddress: ['-s', '192.168.1.32:7216']
+    no-lto: True
+    no-unix: True
+    debug: True
+    archive-debug: 'build-debug.tar.xz'
 - name: psp2
   baseConfig:
-    files: ['mgba.vpk']
+    container: 'mgba/vita'
+    archive: 'build-base.tar.xz'
     arch: 'armv7-vita-eabi'
     platform: 'vita'
     static: True
     ext: '7z'
-    license: 'LICENSE.txt'
-    toolchain: '../src/platform/psp2/CMakeToolchain.vitasdk'
-- name: wii
-  builders: ['ec2', 'vulpes-0', 'vulpes-1']
+    debug: True
+    archive-debug: 'build-debug.tar.xz'
+- name: switch
   baseConfig:
-    files: ['boot.dol', 'meta.xml', 'icon.png']
+    container: 'mgba/switch'
+    archive: 'build-base.tar.xz'
+    arch: 'aarch64-none-elf'
+    platform: 'switch'
+    static: True
+    ext: '7z'
+    no-lto: True
+    debug: True
+    archive-debug: 'build-debug.tar.xz'
+- name: wii
+  baseConfig:
+    container: 'mgba/wii'
+    archive: 'build-base.tar.xz'
     arch: 'powerpc-none-eabi'
     platform: 'wii'
     static: True
     ext: '7z'
-    license: 'LICENSE.txt'
-    toolchain: '../src/platform/wii/CMakeToolchain.txt'
+    no-lto: True
+    debug: True
+    archive-debug: 'build-debug.tar.xz'
