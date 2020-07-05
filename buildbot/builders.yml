@@ -1,6 +1,6 @@
 - name: bbb
   baseConfig:
-    cmake-flags: ['-DDBUILD_BBB=ON']
+    cmake-flags: ['-DDBUILD_BBB=ON', '-DUSE_DISCORD_RPC=OFF']
     root: '/opt/roots/bbb'
     arch: 'armv7-linux-gnueabihf-bbb'
     toolchain: '/home/buildbot/mgba-infrastructure/toolchains/bbb.cmake'
@@ -26,6 +26,7 @@
     frontends: True
     static: True
     ext: 'tar.xz'
+    mime: 'application/x-xz'
     no-lto: True
   builders: ['crocuta']
 - name: rpi
@@ -40,6 +41,7 @@
     archive-perf: ['test']
 - name: windows
   baseConfig:
+    cmake-flags: ['-DINSTALLER_NAME=build-installer']
     container: 'mgba/windows'
     arch: 'x86_64-w64-mingw32'
     platform: 'win64'
@@ -47,11 +49,22 @@
     frontends: True
     static: True
     ext: '7z'
+    mime: 'application/x-7z-compressed'
     no-lto: True
-    debug: True
+    ccache: True
     files: ['build-base.tar.xz', 'build-sdl.tar.xz', 'build-qt.tar.xz']
-    files-debug: ['build-debug.tar.xz']
     unarchive-files: True
+    debug:
+      files: ['build-debug.tar.xz']
+      unarchive-files: True
+    extra-packages:
+      installer:
+        files: ['build-installer.tar.xz']
+        unarchive-files: True
+        rearchive-files: False
+        upload-file: 'build-installer.exe'
+        upload-ext: 'exe'
+        mime: 'application/vnd.microsoft.portable-executable'
   configs:
   - name: 'win32'
     container: 'mgba/windows:w32'
@@ -70,8 +83,10 @@
     files-medusa: ['libmedusa-emu.deb', 'medusa-emu-sdl.deb', 'medusa-emu-qt.deb']
     arch: 'x86_64-ubuntu-linux-gnu'
     medusa: True
+    ccache: True
     frontends: True
     ext: 'tar.xz'
+    mime: 'application/x-xz'
     deb: True
     perf-basedir: '../../..'
   configs:
@@ -80,12 +95,17 @@
     platform: 'ubuntu64-xenial'
     perf: True
     perf-worker: 'arabica'
+    perf-threaded: True
+    cmake-flags: ['-DCMAKE_AR=/usr/bin/gcc-ar', '-DCMAKE_RANLIB=/usr/bin/gcc-ranlib']
   - name: 'ubuntu64-bionic'
     container: 'mgba/ubuntu:bionic'
     platform: 'ubuntu64-bionic'
-  - name: 'ubuntu64-cosmic'
-    container: 'mgba/ubuntu:cosmic'
-    platform: 'ubuntu64-cosmic'
+  - name: 'ubuntu64-eoan'
+    container: 'mgba/ubuntu:eoan'
+    platform: 'ubuntu64-eoan'
+  - name: 'ubuntu64-focal'
+    container: 'mgba/ubuntu:focal'
+    platform: 'ubuntu64-focal'
 - name: 3ds
   baseConfig:
     container: 'mgba/3ds'
@@ -96,12 +116,13 @@
     platform: '3ds'
     static: True
     ext: '7z'
+    mime: 'application/x-7z-compressed'
     profileServerCommand: ['-S', '/opt/devkitPro/devkitARM/bin/3dslink -a 192.168.1.32 mgba-perf.3dsx --arg0 sdmc:/3ds/mgba-perf.3dsx']
     profileServerAddress: ['-s', '192.168.1.32:7216']
     no-lto: True
     no-unix: True
-    debug: True
-    archive-debug: 'build-debug.tar.xz'
+    debug:
+      archive: 'build-debug.tar.xz'
 - name: psp2
   baseConfig:
     container: 'mgba/vita'
@@ -110,8 +131,9 @@
     platform: 'vita'
     static: True
     ext: '7z'
-    debug: True
-    archive-debug: 'build-debug.tar.xz'
+    mime: 'application/x-7z-compressed'
+    debug:
+      archive: 'build-debug.tar.xz'
 - name: switch
   baseConfig:
     container: 'mgba/switch'
@@ -120,9 +142,10 @@
     platform: 'switch'
     static: True
     ext: '7z'
+    mime: 'application/x-7z-compressed'
     no-lto: True
-    debug: True
-    archive-debug: 'build-debug.tar.xz'
+    debug:
+      archive: 'build-debug.tar.xz'
 - name: wii
   baseConfig:
     container: 'mgba/wii'
@@ -131,6 +154,7 @@
     platform: 'wii'
     static: True
     ext: '7z'
+    mime: 'application/x-7z-compressed'
     no-lto: True
-    debug: True
-    archive-debug: 'build-debug.tar.xz'
+    debug:
+      archive: 'build-debug.tar.xz'
